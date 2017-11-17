@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import app from './app';
 import logger from './logger';
 
+logger.info(`Starting server on ${process.env.NODE_ENV} mode`);
 const server = createServer(app);
 server.listen(app.get('port'), app.get('host'));
 server.on('listening', () => {
