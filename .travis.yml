@@ -8,7 +8,7 @@ node_js:
   - 8
 
 before_script:
-  - cp .env-sample .env
+  - cp .sample-env .env
 
 script:
   - npm run lint
