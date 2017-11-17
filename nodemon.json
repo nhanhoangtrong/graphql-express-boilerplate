@@ -1,0 +1,13 @@
+{
+    "verbose": true,
+    "exec": "eslint src --ext js --cache && babel-node src/index.js",
+    "ext": "js json",
+    "watch": [
+        "src",
+        ".babelrc",
+        ".eslintrc"
+    ],
+    "env": {
+        "NODE_ENV": "development"
+    }
+}

@@ -1,0 +1,16 @@
+# Development and production related variables
+HOST=localhost
+PORT=3000
+
+# Specifies which origins in CORS whitelist
+CORS_ORIGIN=http://localhost:3000,http://localhost:3001
+
+# Default PostgreSQL connection string
+PG_CONNECTION_STRING=postgre://postgres@localhost:5432/postgres
+
+# Redis connection string
+REDIS_CONNECTION_STRING=redis://localhost:6379/0
+
+# Session related environment variables
+SESSION_NAME=session_id
+SESSION_SECRET=This is session secret
