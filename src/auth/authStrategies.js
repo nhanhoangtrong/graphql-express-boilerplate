@@ -1,39 +1,33 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import bcrypt from 'bcrypt';
-
-const testerSalt = bcrypt.genSaltSync();
-const tester = {
-    id: 'tester_id',
-    name: 'tester',
-    email: 'tester@localhost',
-    salt: testerSalt,
-    password_hash: bcrypt.hashSync('password', testerSalt),
-};
+import { User } from './models';
+import logger from '../logger';
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-    done(null, tester);
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.byId(id);
+        done(null, user);
+    } catch (err) {
+        done(err);
+    }
 });
 
 export const localStrategy = new LocalStrategy({
     usernameField: 'email',
-}, (email, candidatePassword, done) => {
-    if (email !== tester.email) {
-        return done(null, false, {
-            msg: `Email "${email}" not found`,
-        });
-    }
-
-    bcrypt.compare(candidatePassword, tester.password_hash, (err, matched) => {
-        if (matched) {
-            return done(null, tester);
+    passReqToCallback: true,
+}, async (req, email, candidatePassword, done) => {
+    try {
+        const user = await User.byEmail(email);
+        if (await user.comparePassword(candidatePassword)) {
+            done(null, user);
+        } else {
+            done(null, false);
         }
-        return done(err, matched, {
-            msg: 'Password mismatch.',
-        });
-    });
+    } catch (err) {
+        done(err);
+    }
 });
