@@ -95,8 +95,6 @@ app.use((req, res) => {
 // Logging the error to logger
 app.use((err, req, res, next) => {
     // Logging the error information, includes name, message, stacktrace
-    logger.error(err.name);
-    logger.error(err.message);
     logger.error(err.stack);
 
     next(err);
