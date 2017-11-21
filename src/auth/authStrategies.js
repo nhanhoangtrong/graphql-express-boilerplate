@@ -1,7 +1,8 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import { User } from './models';
-import logger from '../logger';
+import knex from '../knex';
+import bcrypt from 'bcrypt';
+import { AuthError } from './errors';
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -9,25 +10,34 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.byId(id);
+        const user = await knex.table('users').where({ id }).first();
         done(null, user);
     } catch (err) {
         done(err);
     }
 });
 
+export async function comparePassword(candidatePassword, hashedPassword) {
+    return bcrypt.compareSync(candidatePassword, hashedPassword);
+}
+
 export const localStrategy = new LocalStrategy({
     usernameField: 'email',
     passReqToCallback: true,
 }, async (req, email, candidatePassword, done) => {
     try {
-        const user = await User.byEmail(email);
-        if (await user.comparePassword(candidatePassword)) {
-            done(null, user);
-        } else {
-            done(null, false);
+        const user = await knex.table('users').where({ email }).first().on('query-error', done);
+        if (!user) {
+            throw new AuthError('Email not found.');
         }
+
+        // Then compare the candidate password with hashed password
+        if (await comparePassword(candidatePassword, user.password_hash)) {
+            return done(null, user);
+        }
+
+        return done(null, false);
     } catch (err) {
-        done(err);
+        return done(err);
     }
 });
