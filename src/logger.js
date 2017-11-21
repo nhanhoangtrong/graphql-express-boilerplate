@@ -18,7 +18,7 @@ const logger = createLogger({
         timestamp(),
         loggerFormat
     ),
-    level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+    level: process.env.DEBUG === 'true' ? 'debug' : 'info',
     transports: [
         consoleTransport,
     ],
@@ -30,7 +30,7 @@ export default logger;
  * A Writable Stream for output information on our logger
  * @public
  */
-export class LoggerStream {
+export class LoggerInfoStream {
     /**
      * Write a message to infor logger
      *
