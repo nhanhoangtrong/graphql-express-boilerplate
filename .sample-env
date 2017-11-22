@@ -7,7 +7,7 @@ DEBUG=graphql-express:*,-graphql-express:redis
 CORS_ORIGIN=http://localhost:3000,http://localhost:3001
 
 # Default PostgreSQL connection string
-PG_CONNECTION_STRING=postgre://postgres@localhost:5432/postgres
+PG_CONNECTION_STRING=postgre://postgres@localhost:5432/graphql_express
 PG_MIGRATIONS_TABLE=migrations
 
 # Redis connection string
