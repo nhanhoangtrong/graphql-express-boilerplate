@@ -1,4 +1,4 @@
-import { me, users } from './User';
+import { me, users, editUser } from './User';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { node, nodes } from './Node';
 
@@ -12,4 +12,10 @@ export const schema = new GraphQLSchema({
             users,
         },
     }),
+    mutation: new GraphQLObjectType({
+        name: 'Mutation',
+        fields: {
+            editUser,
+        },
+    })
 });
