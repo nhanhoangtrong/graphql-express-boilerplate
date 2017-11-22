@@ -9,6 +9,7 @@ Boilerplate for building GraphQL API endpoints with ExpressJS and Apollo GraphQL
 * Passport authentication and local strategy
 * Loading `.env` file
 * [GraphQL] API endpoints with context object
+* MongoDB with Mongoose Schema Definitions
 * `mocha` testing framework
 * `chai` and `chai-http` as BDD/TDD assertion
 
@@ -31,6 +32,7 @@ cp .env-sample .env
     - `HOST` and `POST`: The host and port of server to listening
     - `CORS-ORIGIN`: List of available origins to put in whitelist, separated by commas
     - Session configs include `SESSION_NAME` and `SESSION_SECRET`.
+    - `MONGODB_CONNECTION_STRING`: Configure MongoDB connection uri
 
 
 ## Install
