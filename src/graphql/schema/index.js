@@ -1,14 +1,15 @@
-import { buildSchema } from 'graphql';
+import { me, users } from './User';
+import { GraphQLSchema, GraphQLObjectType } from 'graphql';
+import { node, nodes } from './Node';
 
-export const schema = buildSchema(`
-type Query {
-    hello: String!
-}
-`);
-
-export const rootResolver = {
-    hello: (args, ctx) => {
-        ctx.isAuthenticated();
-        return `Hello, ${ctx.user.name}`;
-    },
-};
+export const schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+        name: 'Query',
+        fields: {
+            me,
+            node,
+            nodes,
+            users,
+        },
+    }),
+});

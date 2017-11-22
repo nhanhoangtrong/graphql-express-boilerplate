@@ -12,6 +12,7 @@ import redisClient from './redis';
 
 import { authRoute } from './auth';
 import { graphqlRoute } from './graphql';
+import './mongoose';
 
 // First create a new Express application
 const app = express();
