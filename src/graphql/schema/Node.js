@@ -1,23 +1,17 @@
 import { nodeDefinitions, fromGlobalId } from 'graphql-relay';
-import { User } from '../../auth/models';
+import { assignTypeFn, getGraphQLType } from '../utils';
 
-const { nodeInterface, nodeField: node, nodesField: nodes } = nodeDefinitions((globalId) => {
+const { nodeInterface, nodeField: node, nodesField: nodes } = nodeDefinitions((globalId, context) => {
     const { type, id } = fromGlobalId(globalId);
 
     switch (type) {
         case 'User':
-            return User.byId(id).then(user => {
-                if (user) {
-                    user.__type = 'User';
-                    return user;
-                }
-                return null;
-            });
+            return context.loadUserById.load(id).then(assignTypeFn('User'));
         default:
             return null;
     }
 }, obj => {
-    const type = obj ? obj.__type : undefined;
+    const type = getGraphQLType(obj);
     switch (type) {
         case 'User':
             return require('./UserType').default;
