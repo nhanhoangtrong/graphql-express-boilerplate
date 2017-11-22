@@ -11,5 +11,5 @@ export const schema = new GraphQLSchema({
             me,
             users,
         },
-    })
+    }),
 });

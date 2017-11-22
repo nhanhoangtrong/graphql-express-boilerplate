@@ -1,17 +1,24 @@
+import DataLoader from 'dataloader';
+import knex from '../knex';
+import { mapTo } from './utils';
 /**
- * GraphQL Context class, storing request and user information
+ * GraphQL Context class, storing request and user information, need to be created per request
  *
  * @public
  */
 export default class Context {
     /**
-     * Constructing a new context
+     * Constructing a new GraphQL context value for storing user and loader
      *
      * @param {Express.Request} req
      */
     constructor(req) {
         this.req = req;
         this.user = req.user;
+        this.loadUserById = new DataLoader(keys => knex.table('users')
+            .whereIn('id', keys)
+            .select()
+            .then(mapTo(keys, row => row.id)));
     }
 
     /**

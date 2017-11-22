@@ -11,8 +11,8 @@ import {
 export const me = {
     type: UserType,
     description: 'Get your own profile if you have logged in.',
-    resolve(root, args, { user }) {
-        return user;
+    resolve(root, args, { user, loadUserById }) {
+        return loadUserById.load(user.id);
     },
 };
 
