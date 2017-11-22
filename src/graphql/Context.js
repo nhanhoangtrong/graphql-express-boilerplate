@@ -1,5 +1,9 @@
+import DataLoader from 'dataloader';
+import { User } from '../auth/models';
+import { Types } from 'mongoose';
+import { mapTo } from './utils';
 /**
- * GraphQL Context class, storing request and user information
+ * GraphQL Context class, storing request and user information, need to be created per request
  *
  * @public
  */
@@ -12,6 +16,13 @@ export default class Context {
     constructor(req) {
         this.req = req;
         this.user = req.user;
+        this.loadUserById = new DataLoader(
+            keys => User.find({
+                _id: {
+                    $in: keys.map(key => Types.ObjectId(key))
+                },
+            }).exec().then(mapTo(keys, user => user._id.toString()))
+        );
     }
 
     /**
