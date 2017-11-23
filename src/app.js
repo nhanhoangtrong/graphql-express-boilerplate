@@ -12,10 +12,13 @@ import redisClient from './redis';
 
 import { authRoute } from './auth';
 import { graphqlRoute } from './graphql';
+import { connectMongoose } from './mongoose';
 
 // First create a new Express application
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
+
+connectMongoose();
 
 app.set('host', process.env.HOST || 'localhost');
 app.set('port', parseInt(process.env.PORT, 10) || 8080);
