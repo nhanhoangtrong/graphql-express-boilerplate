@@ -87,7 +87,7 @@ app.use((req, res) => {
             message: 'Not Found',
         });
     }
-    return res.status(404).send('Page Not Found');
+    return res.status(404).send('Page Not Found.');
 });
 /**
  * Configure the default error handler
@@ -103,9 +103,10 @@ app.use((err, req, res, next) => {
 // Set the default response status for error
 app.use((err, req, res, next) => {
     // Check if error statusCode has been set or not
-    if (res.statusCode === 200) {
+    if (res.statusCode < 400) {
         // If not set, assign the default status to Internal Server Error
-        res.statusCode = 500;
+        // respect err.statusCode
+        res.statusCode = err.statusCode || 500;
     }
 
     next(err);
