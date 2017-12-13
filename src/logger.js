@@ -1,10 +1,9 @@
 import { createLogger, transports, format} from 'winston';
-const { combine, timestamp, label, printf } = format;
+const { combine, timestamp, label, splat, simple, prettyPrint } = format;
 
 /**
  * Your logger configuration come here
  */
-const loggerFormat = printf(info => `[${info.timestamp}][${info.label}] ${info.level}: ${info.message}`);
 
 export const consoleTransport = new transports.Console({
     handleExceptions: true,
@@ -12,12 +11,28 @@ export const consoleTransport = new transports.Console({
     colorize: true
 });
 
+export const loggerFormating = (format) => {
+    if (format === 'combined') {
+        return combine(
+            timestamp(),
+            label({
+                label: {
+                    platform: process.platform,
+                    pid: process.pid,
+                },
+            }),
+            prettyPrint()
+        );
+    }
+
+    return combine(
+        splat(),
+        simple()
+    );
+};
+
 const logger = createLogger({
-    format: combine(
-        label({ label: 'GraphQL API'}),
-        timestamp(),
-        loggerFormat
-    ),
+    format: loggerFormating(process.env.NODE_ENV !== 'production' ? 'dev' : 'combined'),
     level: process.env.DEBUG === 'true' ? 'debug' : 'info',
     transports: [
         consoleTransport,
