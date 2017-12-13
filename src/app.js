@@ -15,7 +15,7 @@ import { graphqlRoute } from './graphql';
 
 // First create a new Express application
 const app = express();
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
 app.set('host', process.env.HOST || 'localhost');
 app.set('port', parseInt(process.env.PORT, 10) || 8080);
