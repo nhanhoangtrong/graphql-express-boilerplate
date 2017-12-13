@@ -16,19 +16,21 @@ route.post('/signup', async (req, res, next) => {
     try {
 
         if (!validator.isEmail(email + '')) {
-            throw new SignupError('Email is not available.', ['email']);
+            throw new SignupError('Errors on registering.', { 'email': 'Email is not valid.'});
         }
         if (!validator.isLength(password + '', { min: 8, max: 32 })) {
-            throw new SignupError('Password must be in range (8-32) characters.', ['password']);
+            throw new SignupError('Errors on registering.', { 'password': 'Password must be in range (8-32) characters.' });
         }
         if (!validator.isLength(first_name + '', { min: 1, max: 100 }) || !validator.isLength(last_name + '', { min: 1, max: 100})) {
-            throw new SignupError('First name or last name must be provided', ['first_name', 'last_name']);
+            throw new SignupError('Errors on registering.', {
+                'first_name': 'Must be provided.',
+                'last_name': 'Must be provided.'});
         }
 
         const newUser = await knex.transaction(async (trx) => {
             const preUser = await trx.table('users').where({email}).first();
             if (preUser) {
-                throw new SignupError('Email has been taken.', ['email']);
+                throw new SignupError('Errors on registering.', { 'email': 'Email has been taken.' });
             }
 
             const password_salt = bcrypt.genSaltSync();
@@ -48,12 +50,6 @@ route.post('/signup', async (req, res, next) => {
 
         return res.json(newUser);
     } catch (err) {
-        if (err.name === 'SignupError') {
-            return res.status(400).json({
-                message: err.message,
-                fields: err.fields,
-            });
-        }
         return next(err);
     }
 }).get('/verify', (req, res) => {
@@ -91,11 +87,14 @@ route.post('/signup', async (req, res, next) => {
     });
 })
 .use((err, req, res, next) => {
-    if (err.name === 'EmailNotFound') {
-        res.status(400).json({
+    if (err.name === 'SignupError' || err.name === 'AuthError') {
+        return res.status(err.statusCode).json({
+            name: err.name,
             message: err.message,
+            errors: err.errors,
         });
     }
+
     next(err);
 });
 

@@ -1,19 +1,24 @@
-export class AuthError extends Error {
+export class FieldError extends Error {
     constructor(message, fields) {
         super(message);
-        this.name = 'AuthError';
-        this.fields = [
+        this.name = 'FieldError';
+        this.errors = {
             ...fields,
-        ];
+        };
+    }
+}
+export class AuthError extends FieldError {
+    constructor(message, fields) {
+        super(message, fields);
+        this.name = 'AuthError';
+        this.statusCode = 401; // Unauthorized
     }
 }
 
-export class SignupError extends Error {
+export class SignupError extends FieldError {
     constructor(message, fields) {
-        super(message);
+        super(message, fields);
         this.name = 'SignupError';
-        this.fields = [
-            ...fields,
-        ];
+        this.statusCode = 400; // Bad Request
     }
 }

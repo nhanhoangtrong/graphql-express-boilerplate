@@ -18,7 +18,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 export async function comparePassword(candidatePassword, hashedPassword) {
-    return bcrypt.compareSync(candidatePassword, hashedPassword);
+    return await bcrypt.compare(candidatePassword, hashedPassword);
 }
 
 export const localStrategy = new LocalStrategy({
@@ -28,7 +28,7 @@ export const localStrategy = new LocalStrategy({
     try {
         const user = await knex.table('users').where({ email }).first().on('query-error', done);
         if (!user) {
-            throw new AuthError('Email not found.');
+            throw new AuthError('Email not found.', { email: 'Not found.'});
         }
 
         // Then compare the candidate password with hashed password
