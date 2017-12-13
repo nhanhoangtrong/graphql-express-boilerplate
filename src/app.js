@@ -15,7 +15,7 @@ import { graphqlRoute } from './graphql';
 
 // First create a new Express application
 const app = express();
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
 app.set('host', process.env.HOST || 'localhost');
 app.set('port', parseInt(process.env.PORT, 10) || 8080);
@@ -92,14 +92,6 @@ app.use((req, res) => {
 /**
  * Configure the default error handler
  */
-// Logging the error to logger
-app.use((err, req, res, next) => {
-    // Logging the error information, includes name, message, stacktrace
-    logger.error('Default errors handler.');
-    logger.error(err.stack);
-
-    next(err);
-});
 // Set the default response status for error
 app.use((err, req, res, next) => {
     // Check if error statusCode has been set or not
@@ -111,6 +103,14 @@ app.use((err, req, res, next) => {
 
     next(err);
 });
+// Logging the error to logger
+app.use((err, req, res, next) => {
+    // Logging the error information, includes name, message, stacktrace
+    logger.error('Error Handling Middleware');
+    logger.error(err.stack);
+
+    next(err);
+});
 // Finally, add the default error handler if not handled
 app.use((err, req, res, next) => {
     // Check if headers is sent
@@ -119,7 +119,7 @@ app.use((err, req, res, next) => {
     }
 
     // Check if AJAX request, send the JSON error
-    if (req.xhr) {
+    if (req.xhr || req.is('application/json')) {
         return res.json({
             name: err.name,
             message: err.message,
