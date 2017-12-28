@@ -1,15 +1,18 @@
 import mongoose from 'mongoose';
-import logger from './logger';
+import { debug, logger } from './utils';
 mongoose.Promise = Promise;
+
+const mongoDebug = debug('mongoose');
 
 export async function connectMongoose() {
     return mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
         useMongoClient: true,
     }).then(() => {
-        logger.info('MongoDB Connection Successfully');
+        mongoDebug('Connection Successfully');
     }).catch((err) => {
-        logger.error('MongoDB Connection Error');
-        logger.error(err.stack);
+        logger.error(err.stack, {
+            from: 'mongoose'
+        });
         process.exit(1);
     });
 }
