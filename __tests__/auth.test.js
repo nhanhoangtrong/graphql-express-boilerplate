@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../src/app';
-import { consoleTransport } from '../src/logger';
+import { consoleTransport } from '../src/utils/logger';
 
 // Disable info logger when testing
 consoleTransport.level = 'warning';

@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { consoleTransport } from '../src/logger';
+import { consoleTransport } from '../src/utils/logger';
 import '../src/index';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
