@@ -1,5 +1,5 @@
 import knex from 'knex';
-import logger from './logger';
+import { debug } from './utils';
 
 const db = knex({
     client: 'pg',
@@ -7,16 +7,17 @@ const db = knex({
     migrations: {
         tableName: process.env.PG_MIGRATIONS_TABLE || 'migrations',
     },
-    debug: process.env.DEBUG === 'true',
 });
+
+const knexDebug = debug('knex');
 
 // Debug queries in KnexJS
 db.on('query', (query) => {
-    logger.debug(`Query id: ${query.__knexQueryUid}`);
-    logger.debug(`Query: ${query.sql}`);
+    knexDebug(`Query id: ${query.__knexQueryUid}`);
+    knexDebug(`Query: ${query.sql}`);
 }).on('query-response', (response, query) => {
-    logger.debug(`Received a response from: ${query.__knexQueryUid}`);
-    logger.debug(`Response: \n${JSON.stringify(response, null, 2)}`);
+    knexDebug(`Received a response from: ${query.__knexQueryUid}`);
+    knexDebug(`Response: \n${JSON.stringify(response, null, 2)}`);
 });
 
 export default db;
