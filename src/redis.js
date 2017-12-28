@@ -1,13 +1,16 @@
 import { createClient } from 'redis';
-import logger from './logger';
+import { logger, debug } from './utils';
+
+const redisDebug = debug('redis');
 
 const redisClient = createClient(process.env.REDIS_CONNECTION_STRING);
 redisClient.on('ready', () => {
-    logger.info('Redis - Connection Successfully');
+    redisDebug('Client connection ready.');
 });
 redisClient.on('error', (err) => {
-    logger.error('Redis - Connection Error');
-    logger.error(err.stack);
+    logger.error(err.stack, {
+        from: 'redis',
+    });
 });
 
 export default redisClient;

@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import connectRedis from 'connect-redis';
-import logger, { LoggerInfoStream } from './logger';
+import { logger, LoggerStream, debug } from './utils';
 import redisClient from './redis';
 
 import { authRoute } from './auth';
@@ -22,7 +22,7 @@ app.set('port', parseInt(process.env.PORT, 10) || 8080);
 app.set('debug', isDev);
 app.set('trust proxy', 'loopback');
 app.use(morgan(isDev ? 'dev' : 'combined', {
-    stream: new LoggerInfoStream(),
+    stream: new LoggerStream('info', { from: 'morgan'}),
 }));
 app.use(cors({
     // Configures the Access-Control-Allow-Origin CORS header to allow by default

@@ -1,7 +1,7 @@
 # Development and production related variables
 HOST=localhost
 PORT=3000
-DEBUG=false
+DEBUG=graphql-express:*,-graphql-express:redis
 
 # Specifies which origins in CORS whitelist
 CORS_ORIGIN=http://localhost:3000,http://localhost:3001

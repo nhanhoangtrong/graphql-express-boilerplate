@@ -6,9 +6,7 @@ const { combine, timestamp, label, splat, simple, prettyPrint } = format;
  */
 
 export const consoleTransport = new transports.Console({
-    handleExceptions: true,
-    json: false,
-    colorize: true
+    level: 'info',
 });
 
 export const loggerFormating = (format) => {
@@ -33,7 +31,7 @@ export const loggerFormating = (format) => {
 
 const logger = createLogger({
     format: loggerFormating(process.env.NODE_ENV !== 'production' ? 'dev' : 'combined'),
-    level: process.env.DEBUG === 'true' ? 'debug' : 'info',
+    level: 'info',
     transports: [
         consoleTransport,
     ],
@@ -45,7 +43,11 @@ export default logger;
  * A Writable Stream for output information on our logger
  * @public
  */
-export class LoggerInfoStream {
+export class LoggerStream {
+    constructor(level, meta) {
+        this.level = level;
+        this.meta = meta;
+    }
     /**
      * Write a message to infor logger
      *
@@ -53,6 +55,6 @@ export class LoggerInfoStream {
      * @public
      */
     write(info) {
-        logger.info(info);
+        logger.log(this.level, info.replace('\n', ''), this.meta);
     }
 }
