@@ -5,6 +5,7 @@ mongoose.Promise = Promise;
 const mongoDebug = debug('mongoose');
 
 export async function connectMongoose() {
+    mongoDebug('Start connection');
     return mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
         useMongoClient: true,
     }).then(() => {
