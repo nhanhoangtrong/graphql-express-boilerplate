@@ -10,7 +10,7 @@ Boilerplate for building GraphQL API endpoints with ExpressJS and Apollo GraphQL
 * Loading `.env` file
 * [GraphQL] API endpoints with context object
 * MongoDB with Mongoose Schema Definitions
-* `mocha` testing framework
+* `jest` testing framework
 * `chai` and `chai-http` as BDD/TDD assertion
 
 ## Prerequisites
