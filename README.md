@@ -11,7 +11,7 @@ Boilerplate for building GraphQL API endpoints with ExpressJS and Apollo GraphQL
 * Loading `.env` file
 * [GraphQL] API endpoints with context object
 * [PostgreSQL] database and [KnexJS] schema and query builder
-* `mocha` testing framework
+* `jest` testing framework
 * `chai` and `chai-http` as BDD/TDD assertion
 
 ## Prerequisites
