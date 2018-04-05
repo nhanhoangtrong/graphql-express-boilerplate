@@ -14,6 +14,7 @@ module.exports = class Context {
      */
     constructor(req) {
         this.req = req;
+        this.db = knex;
         this.user = req.user;
         this.loadUserById = new DataLoader((keys) =>
             knex
@@ -22,6 +23,8 @@ module.exports = class Context {
                 .select()
                 .then(mapTo(keys, (row) => row.id))
         );
+
+        this.loadAllUser = knex.table('users').select();
     }
 
     /**

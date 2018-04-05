@@ -1,11 +1,16 @@
 const { Router } = require('express');
+const { resolve } = require('path');
 const { graphqlExpress } = require('apollo-server-express');
 const { printSchema } = require('graphql');
-const schema = require('./schema');
+const { makeExecutableSchema } = require('graphql-tools');
+const { importSchema } = require('graphql-import');
 const GraphQLContext = require('./Context');
 
-const route = Router();
+const typeDefs = importSchema(resolve(__dirname, 'schemas', 'index.graphql'));
+const resolvers = require('./resolvers');
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
+const route = Router();
 route
     .get('/schema', (req, res) => {
         res.type('text/plain').send(printSchema(schema));

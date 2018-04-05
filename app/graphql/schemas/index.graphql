@@ -1,0 +1,10 @@
+# import User from "User.graphql"
+
+# All the allow queries
+type Query {
+    # Get current authenticated user
+    me: User
+
+    # Get a list of all available users
+    users: [User]
+}
