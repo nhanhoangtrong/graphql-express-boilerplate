@@ -16,7 +16,7 @@ const { nodeInterface, nodeField: node, nodesField: nodes } = nodeDefinitions(
         const type = getGraphQLType(obj);
         switch (type) {
             case 'User':
-                return require('./UserType').default;
+                return require('./UserType');
             default:
                 return null;
         }
