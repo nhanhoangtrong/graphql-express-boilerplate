@@ -1,6 +1,6 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql';
-import { globalIdField } from 'graphql-relay';
-import { nodeInterface } from './Node';
+const { GraphQLObjectType, GraphQLString } = require('graphql');
+const { globalIdField } = require('graphql-relay');
+const { nodeInterface } = require('./Node');
 
 const UserType = new GraphQLObjectType({
     name: 'User',
@@ -26,4 +26,4 @@ const UserType = new GraphQLObjectType({
     },
 });
 
-export default UserType;
+module.exports = UserType;

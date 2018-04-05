@@ -1,14 +1,23 @@
 {
-    "parser": "babel-eslint",
-    "extends": "eslint:recommended",
-    "env": {
-        "browser": false,
-        "node": true,
-        "es6": true,
-        "mocha": true,
-        "jest": true
-    },
-    "rules": {
-        "semi": ["error", "always"]
+  "extends": "eslint:recommended",
+  "env": {
+    "browser": false,
+    "node": true,
+    "es6": true,
+    "mocha": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "objectLiteralDuplicateProperties": true,
+      "arrowFunctions": true
     }
+  },
+  "rules": {
+    "semi": ["error", "always"]
+  }
 }

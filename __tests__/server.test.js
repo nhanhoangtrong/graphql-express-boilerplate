@@ -1,9 +1,6 @@
-import request from 'supertest';
-import { consoleTransport } from '../src/utils/logger';
-import '../src/index';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-import app from '../src/app';
+const request = require('supertest');
+const { consoleTransport } = require('../utils/logger');
+const app = require('../app');
 
 // Disable info logger when testing
 consoleTransport.level = 'warning';
@@ -14,11 +11,9 @@ describe('Testing the basic server', () => {
         expect(res.status).toBe(200);
     });
 
-    test('Should serve a text file in /static folder', async () => {
-        const data = readFileSync(resolve(__dirname, '../static/text.txt'));
-        const res = await request(app)
-            .get('/static/text.txt');
+    test('Should a greeting string', async () => {
+        const res = await request(app).get('/');
         expect(res.status).toBe(200);
-        expect(res.text).toEqual(data.toString());
+        expect(res.text).toEqual('Hello World!');
     });
 });

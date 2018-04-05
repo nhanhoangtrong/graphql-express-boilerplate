@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
+const bcrypt = require('bcrypt');
 
-export class User {
+exports.User = class {
     constructor(user) {
         this.id = user.id;
         this.first_name = user.first_name;
@@ -18,4 +18,4 @@ export class User {
     async comparePassword(candidatePassword) {
         return bcrypt.compareSync(candidatePassword, this.password_hash);
     }
-}
+};

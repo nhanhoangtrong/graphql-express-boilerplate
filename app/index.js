@@ -1,17 +1,16 @@
-import { join } from 'path';
-import express from 'express';
-import morgan from 'morgan';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import passport from 'passport';
-import connectRedis from 'connect-redis';
-import { logger, LoggerStream, debug } from './utils';
-import redisClient from './redis';
+const express = require('express');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const connectRedis = require('connect-redis');
+const { defaultLogger, LoggerStream, debug } = require('../utils');
+const redisClient = require('../db/redis');
 
-import { authRoute } from './auth';
-import { graphqlRoute } from './graphql';
+const { authRoute } = require('./auth');
+const { graphqlRoute } = require('./graphql');
 
 // First create a new Express application
 const app = express();
@@ -21,34 +20,42 @@ app.set('host', process.env.HOST || 'localhost');
 app.set('port', parseInt(process.env.PORT, 10) || 8080);
 app.set('debug', isDev);
 app.set('trust proxy', 'loopback');
-app.use(morgan(isDev ? 'dev' : 'combined', {
-    stream: new LoggerStream('info', { from: 'morgan'}),
-}));
-app.use(cors({
-    // Configures the Access-Control-Allow-Origin CORS header to allow by default
-    origin(origin, cb) {
-        const whitelist = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
-        cb(null, whitelist.includes(origin));
-    },
-    // Configures the Access-Control-Allow-Credentials CORS header
-    credentials: true,
-    // Some legacy browsers(IE11, various SmartTVs) choke on 204
-    optionsSuccessStatus: 200,
-}));
+app.use(
+    morgan(isDev ? 'dev' : 'combined', {
+        stream: new LoggerStream('info', { from: 'morgan' }),
+    })
+);
+app.use(
+    cors({
+        // Configures the Access-Control-Allow-Origin CORS header to allow by default
+        origin(origin, cb) {
+            const whitelist = process.env.CORS_ORIGIN
+                ? process.env.CORS_ORIGIN.split(',')
+                : [];
+            cb(null, whitelist.includes(origin));
+        },
+        // Configures the Access-Control-Allow-Credentials CORS header
+        credentials: true,
+        // Some legacy browsers(IE11, various SmartTVs) choke on 204
+        optionsSuccessStatus: 200,
+    })
+);
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const RedisStore = connectRedis(session);
-app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    name: process.env.SESSION_NAME || 'session_id',
-    secret: process.env.SESSION_SECRET || 'session_secret',
-    store: new RedisStore({
-        client: redisClient,
-    }),
-}));
+app.use(
+    session({
+        resave: true,
+        saveUninitialized: true,
+        name: process.env.SESSION_NAME || 'session_id',
+        secret: process.env.SESSION_SECRET || 'session_secret',
+        store: new RedisStore({
+            client: redisClient,
+        }),
+    })
+);
 
 /**
  * Authentication features
@@ -57,8 +64,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', authRoute);
 
-app.use('/static', express.static(join(process.cwd(), 'static')));
-
 /**
  * Setting up the graphql and graphiql features
  */
@@ -66,9 +71,12 @@ app.use('/graphql', graphqlRoute);
 // Enable graphiql in development
 if (isDev) {
     const graphiql = require('apollo-server-express').graphiqlExpress;
-    app.use('/graphiql', graphiql({
-        endpointURL: '/graphql',
-    }));
+    app.use(
+        '/graphiql',
+        graphiql({
+            endpointURL: '/graphql',
+        })
+    );
 }
 
 /**
@@ -103,11 +111,11 @@ app.use((err, req, res, next) => {
 
     next(err);
 });
-// Logging the error to logger
+// Logging the error to defaultLogger
 app.use((err, req, res, next) => {
     // Logging the error information, includes name, message, stacktrace
-    logger.error('Error Handling Middleware');
-    logger.error(err.stack);
+    defaultLogger.error('Error Handling Middleware');
+    defaultLogger.error(err.stack);
 
     next(err);
 });
@@ -128,4 +136,4 @@ app.use((err, req, res, next) => {
     return res.send(`${err.name}: ${err.message}`);
 });
 
-export default app;
+module.exports = app;

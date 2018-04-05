@@ -1,14 +1,14 @@
-import UserType from './UserType';
-import knex from '../../knex';
-import { GraphQLNonNull, GraphQLInt } from 'graphql';
-import {
+const UserType = require('./UserType');
+const knex = require('../../../db/knex');
+const { GraphQLNonNull, GraphQLInt } = require('graphql');
+const {
     connectionDefinitions,
     forwardConnectionArgs,
     connectionFromArraySlice,
-    cursorToOffset
-} from 'graphql-relay';
+    cursorToOffset,
+} = require('graphql-relay');
 
-export const me = {
+exports.me = {
     type: UserType,
     description: 'Get your own profile if you have logged in.',
     resolve(root, args, { user, loadUserById }) {
@@ -23,23 +23,27 @@ const { connectionType: UserConnection } = connectionDefinitions({
         totalCount: {
             type: new GraphQLNonNull(GraphQLInt),
         },
-    }
+    },
 });
 
-export const users = {
+exports.users = {
     type: UserConnection,
     description: 'Fetch users object using Connection.',
     args: forwardConnectionArgs,
     async resolve(root, args) {
         const limit = typeof args.first === 'undefined' ? '10' : args.first;
-        const offset = args.after ? cursorToOffset(args.after) + 1: 0;
+        const offset = args.after ? cursorToOffset(args.after) + 1 : 0;
 
-        const [data, totalCount ] = await Promise.all([
-            knex.table('users')
+        const [data, totalCount] = await Promise.all([
+            knex
+                .table('users')
                 .orderBy('created_at', 'desc')
                 .limit(limit)
                 .offset(offset),
-            knex.table('users').count().then(x => x[0].count),
+            knex
+                .table('users')
+                .count()
+                .then((x) => x[0].count),
         ]);
 
         return {

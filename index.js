@@ -1,12 +1,12 @@
-import './loadenv';
-import './knex';
-import { createServer } from 'http';
-import app from './app';
-import { logger, debug } from './utils';
+require('dotenv').config();
+require('./db/knex');
+const { createServer } = require('http');
+const app = require('./app');
+const { logger, debug } = require('./utils');
 
 const serverDebug = debug('server');
-
 serverDebug(`Starting server on ${process.env.NODE_ENV} mode`);
+
 const server = createServer(app);
 server.listen(app.get('port'), app.get('host'));
 server.on('listening', () => {
@@ -23,4 +23,4 @@ server.on('close', () => {
     serverDebug('Server is going to close');
 });
 
-export default server;
+module.exports = server;

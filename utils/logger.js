@@ -1,15 +1,15 @@
-import { createLogger, transports, format} from 'winston';
+const { createLogger, transports, format } = require('winston');
 const { combine, timestamp, label, splat, simple, prettyPrint } = format;
 
 /**
  * Your logger configuration come here
  */
 
-export const consoleTransport = new transports.Console({
+exports.consoleTransport = new transports.Console({
     level: 'info',
 });
 
-export const loggerFormating = (format) => {
+exports.loggerFormating = (format) => {
     if (format === 'combined') {
         return combine(
             timestamp(),
@@ -23,27 +23,24 @@ export const loggerFormating = (format) => {
         );
     }
 
-    return combine(
-        splat(),
-        simple()
-    );
+    return combine(splat(), simple());
 };
 
 const logger = createLogger({
-    format: loggerFormating(process.env.NODE_ENV !== 'production' ? 'dev' : 'combined'),
+    format: exports.loggerFormating(
+        process.env.NODE_ENV !== 'production' ? 'dev' : 'combined'
+    ),
     level: 'info',
-    transports: [
-        consoleTransport,
-    ],
+    transports: [exports.consoleTransport],
     exitOnError: false,
 });
-export default logger;
+exports.default = logger;
 
 /**
  * A Writable Stream for output information on our logger
  * @public
  */
-export class LoggerStream {
+exports.LoggerStream = class LoggerStream {
     constructor(level, meta) {
         this.level = level;
         this.meta = meta;
@@ -57,4 +54,4 @@ export class LoggerStream {
     write(info) {
         logger.log(this.level, info.replace('\n', ''), this.meta);
     }
-}
+};

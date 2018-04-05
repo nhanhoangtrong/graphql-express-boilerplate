@@ -1,13 +1,6 @@
-export class FieldError extends Error {
-    constructor(message, fields) {
-        super(message);
-        this.name = 'FieldError';
-        this.errors = {
-            ...fields,
-        };
-    }
-}
-export class AuthError extends FieldError {
+const { BadRequestError } = require('../errors');
+
+class AuthError extends BadRequestError {
     constructor(message, fields) {
         super(message, fields);
         this.name = 'AuthError';
@@ -15,10 +8,15 @@ export class AuthError extends FieldError {
     }
 }
 
-export class SignupError extends FieldError {
+class SignupError extends BadRequestError {
     constructor(message, fields) {
         super(message, fields);
         this.name = 'SignupError';
         this.statusCode = 400; // Bad Request
     }
 }
+
+module.exports = {
+    AuthError,
+    SignupError,
+};

@@ -1,6 +1,6 @@
-import request from 'supertest';
-import app from '../src/app';
-import { consoleTransport } from '../src/utils/logger';
+const request = require('supertest');
+const app = require('../app');
+const { consoleTransport } = require('../utils/logger');
 
 // Disable info logger when testing
 consoleTransport.level = 'warning';
@@ -15,6 +15,5 @@ describe('Testing /auth route', () => {
         } catch (err) {
             expect(err.status).toBe(400);
         }
-
     });
 });
