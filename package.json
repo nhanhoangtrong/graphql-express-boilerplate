@@ -18,7 +18,7 @@
     "apollo-server-express": "^1.2.0",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
-    "connect-redis": "^3.3.2",
+    "connect-redis": "^3.4.2",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
